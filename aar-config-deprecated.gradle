@@ -1,0 +1,20 @@
+task aarConfig() {
+    def hasAar = false
+    new File(project.projectDir.path + '/libs').listFiles().each { File file ->
+        def fileName = file.name
+        if (fileName.endsWith('.aar')) {
+            def aarName = fileName.substring(0, fileName.length() - 4)
+            hasAar = true
+            dependencies {
+                compile(name: aarName, ext: 'aar')
+            }
+        }
+    }
+    if (hasAar) {
+        repositories {
+            flatDir {
+                dirs 'libs'
+            }
+        }
+    }
+}
