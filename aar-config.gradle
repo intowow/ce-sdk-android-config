@@ -1,12 +1,27 @@
 task aarConfig() {
     def hasAar = false
+    def curGradleVer = project.getGradle().getGradleVersion()
+    def isGradleVerMatched = false
+
+    //>> check current gradle version is >= 4.1 or not
+    if ('4.1'.compareTo(curGradleVer) <= 0) {
+        isGradleVerMatched = true
+    }
+
     new File(project.projectDir.path + '/libs').listFiles().each { File file ->
         def fileName = file.name
         if (fileName.endsWith('.aar')) {
             def aarName = fileName.substring(0, fileName.length() - 4)
             hasAar = true
-            dependencies {
-                compile(name: aarName, ext: 'aar')
+            if (isGradleVerMatched) {
+                dependencies {
+                    api(name: aarName, ext: 'aar')
+                }
+            }
+            else {
+                dependencies {
+                    compile(name: aarName, ext: 'aar')
+                }
             }
         }
     }
